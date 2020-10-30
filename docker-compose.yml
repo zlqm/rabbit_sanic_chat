@@ -1,0 +1,18 @@
+version: '3.0'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./rabbit_sanic_chat:/app/rabbit_sanic_chat"
+    working_dir: /app
+    # command: ["python", "run.py"]
+    command: gunicorn rabbit_sanic_chat.rabbit_sanic_chat:app --worker-class sanic.worker.GunicornWorker --bind 0.0.0.0:8000
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
